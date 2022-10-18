@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "A simple MERN app for keeping track of budgets.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jwrounds/budget-tracker.git"
+  },
+  "author": "Jason Winter Rounds",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jwrounds/budget-tracker/issues"
+  },
+  "homepage": "https://github.com/jwrounds/budget-tracker#readme"
+}
