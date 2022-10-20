@@ -2,12 +2,9 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "A simple MERN app for keeping track of budgets.",
-  "main": "built/index.js",
+  "main": "built/server.js",
   "scripts": {
-    "build": "tsc",
-    "prestart": "npm run build",
-    "start": "node .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server": "npx nodemon backend/server.ts"
   },
   "repository": {
     "type": "git",
@@ -24,7 +21,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "mongodb": "^4.10.0"
+    "mongodb": "^4.10.0",
+    "ts-node-dev": "^2.0.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.40.1",

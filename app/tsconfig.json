@@ -7,5 +7,6 @@
     "allowJs": true,
     "target": "ES6"
   },
-  "include": ["./backend/**/*"]
+  "include": ["./backend/**/*"],
+  "exclude": ["node_modules", "./built/**/*"]
 }
