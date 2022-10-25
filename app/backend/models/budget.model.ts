@@ -9,7 +9,7 @@ const budgetItemSchema = new Schema({
 });
 
 const budgetSchema = new Schema({
-  username: { type: String },
+  user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
   budget_interval: { type: String, required: true },
   persons: { type: Number, required: false},
   totalBudget: { type: Number, required: false, default: 0 },
