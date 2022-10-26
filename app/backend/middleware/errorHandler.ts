@@ -11,6 +11,4 @@ const errorHandler = (err, req: express.Request, res: express.Response, next: ex
   });
 }
 
-export {
-  errorHandler
-}
+export default errorHandler;

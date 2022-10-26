@@ -5,7 +5,8 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "allowJs": true,
-    "target": "ES6"
+    "target": "ES6",
+    "typeRoots" : ["./backend/types", "./node_modules/@types"]
   },
   "include": ["./backend/**/*"],
   "exclude": ["node_modules", "./built/**/*"]

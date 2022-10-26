@@ -1,9 +1,9 @@
 import express from "express"
 import budgets from "./routes/budgets.route";
 import users from "./routes/user.routes";
-import { errorHandler } from "./middleware/errorHandler";
+import errorHandler from "./middleware/errorHandler";
 import dotenv from "dotenv";
-import { connectDB } from "./config/db";
+import connectDB from "./config/db";
 dotenv.config();
 
 connectDB();

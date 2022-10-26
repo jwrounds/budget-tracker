@@ -1,5 +1,5 @@
-import express from "express";
-import jsonwebtoken, { JsonWebTokenError } from "jsonwebtoken";
+import { Request, Response } from "express";
+import jsonwebtoken from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import asyncHandler from "express-async-handler";
 import User from "../models/user.model";
@@ -8,7 +8,7 @@ import User from "../models/user.model";
 // @desc    Register new user
 // @route   POST api/v1/users
 // @access  Public
-const registerUser = asyncHandler(async (req: express.Request, res: express.Response) => {
+const registerUser = asyncHandler(async (req: Request, res: Response) => {
   const { username, password, email } = req.body;
 
   // Check if required fields present
@@ -40,7 +40,8 @@ const registerUser = asyncHandler(async (req: express.Request, res: express.Resp
     res.status(201).json({
       _id: user.id,
       username: user.username,
-      email: user.email
+      email: user.email,
+      token: generateToken(user.id)
     });
   } else {
     res.status(400);
@@ -51,7 +52,7 @@ const registerUser = asyncHandler(async (req: express.Request, res: express.Resp
 // @desc    Login in user
 // @route   POST api/v1/users/login
 // @access  Public
-const loginUser = asyncHandler(async (req: express.Request, res: express.Response) => {
+const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
   // Check if required fields present
@@ -68,7 +69,8 @@ const loginUser = asyncHandler(async (req: express.Request, res: express.Respons
     res.status(201).json({
       _id: user.id,
       username: user.username,
-      email: user.email
+      email: user.email,
+      token: generateToken(user.id)
     });
   } else {
     res.status(400);
@@ -80,9 +82,23 @@ const loginUser = asyncHandler(async (req: express.Request, res: express.Respons
 // @desc    Get user data
 // @route   GET api/v1/users/me
 // @access  Private
-const getCurrentUser = asyncHandler(async (req: express.Request, res: express.Response) => {
-  res.json({ message: "User data retrieved!"});
+const getCurrentUser = asyncHandler(async (req: Request, res: Response) => {
+  const {_id, username, email, budgets, favorites } = await User.findById(req.user.id);
+
+  res.status(200).json({ 
+    _id: _id,
+    username: username,
+    email: email,
+    budgets: budgets,
+    favorites: favorites
+  });
 });
+
+// Generate JWT
+
+const generateToken = (id: string): string => {
+  return jsonwebtoken.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+}
 
 export {
   registerUser,

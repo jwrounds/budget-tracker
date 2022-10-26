@@ -1,4 +1,5 @@
 import express from "express";
+import protect from "../middleware/auth";
 import {
   getBudgets,
   postBudget,
@@ -9,7 +10,7 @@ import {
 
 const router = express.Router();
 
-router.route("/").get(getBudgets).post(postBudget);
-router.route("/:id").get(getBudgetById).put(updateBudgetById).delete(deleteBudgetById);
+router.route("/").get(getBudgets).post(protect, postBudget);
+router.route("/:id").get(getBudgetById).put(protect, updateBudgetById).delete(protect, deleteBudgetById);
 
 export default router;
