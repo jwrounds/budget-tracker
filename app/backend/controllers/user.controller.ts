@@ -36,16 +36,27 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
     email: req.body.email
   });
 
+  // If user is valid, send response and save JWT
   if (user) {
-    res.status(201).json({
+
+    // Generate token and set token to expire in one week
+    const token: string = generateToken(user.id);
+    const expirationDate: Date = new Date();
+    expirationDate.setDate(expirationDate.getDate() + 7);
+    
+    // Send response with token as httpOnly cookie
+    res.status(201).cookie("access_token", token, {
+      expires: expirationDate,
+      httpOnly: true,
+    }).json({
       _id: user.id,
       username: user.username,
       email: user.email,
-      token: generateToken(user.id)
+      token: token
     });
   } else {
     res.status(400);
-    throw new Error("Invalid user data!")
+    throw new Error("Invalid user data!");
   }
 });
 
@@ -65,13 +76,24 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const user = await User.findOne({ username });
   const hashedPassword = String(user.password);
 
+  // If user credentials valid, save JWT
   if (user && (await bcrypt.compare(password, hashedPassword))) {
-    res.status(201).json({
-      _id: user.id,
-      username: user.username,
-      email: user.email,
-      token: generateToken(user.id)
-    });
+
+      // Generate token and set token to expire in one week
+      const token: string = generateToken(user.id);
+      const expirationDate: Date = new Date();
+      expirationDate.setDate(expirationDate.getDate() + 7);
+
+      // Send response with token as httpOnly cookie
+      res.status(201).cookie("access_token", token, {
+        expires: expirationDate,
+        httpOnly: true,
+      }).json({
+        _id: user.id,
+        username: user.username,
+        email: user.email,
+        token: token
+      });
   } else {
     res.status(400);
     throw new Error("Invalid login credentials!");

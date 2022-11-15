@@ -10,11 +10,10 @@ interface JwtPayload {
 const protect = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   let token: string;
 
-  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+  if (req.cookies.access_token) {
     try {
       // Extract token from header
-      token = req.headers.authorization.split(" ")[1];
-
+      token = req.cookies.access_token;
       // Verify token
       const decoded = jsonwebtoken.verify(token, process.env.JWT_SECRET) as JwtPayload;
 

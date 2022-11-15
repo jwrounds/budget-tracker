@@ -3,14 +3,14 @@ const { Schema } = mongoose;
 
 const budgetItemSchema = new Schema({
   name: { type: String, required: true },
-  budget_percent: { type: Number, required: true }
+  budgetPercent: { type: Number, required: true }
 }, {
   _id: false
 });
 
 const budgetSchema = new Schema({
-  user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
-  budget_interval: { type: String, required: true },
+  user: { type: Schema.Types.ObjectId, required: true },
+  budgetInterval: { type: String, required: true },
   persons: { type: Number, required: false},
   totalBudget: { type: Number, required: false, default: 0 },
   expenses: [ budgetItemSchema ]
@@ -18,6 +18,6 @@ const budgetSchema = new Schema({
   timestamps: true
 });
 
-const budgetModel = mongoose.model("Budget", budgetSchema);
+const Budget = mongoose.model("Budget", budgetSchema);
 
-export default budgetModel;
+export default Budget;
