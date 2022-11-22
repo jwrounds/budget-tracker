@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { FaUser } from 'react-icons/fa';
 
 interface LoginState {
-    email: '',
+    username: '',
     password: '',
 }
 
 function Login() {
   const [formData, setFormData] = useState<LoginState>({
-    email: '',
+    username: '',
     password: '',
   });
 
-  const {email, password} = formData;
+  const {username, password} = formData;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState) => ({
@@ -41,10 +41,10 @@ function Login() {
             <input 
               type="text" 
               className="form-control" 
-              id='email' 
-              name='email' 
-              value={email} 
-              placeholder='Enter your email'
+              id='username' 
+              name='username' 
+              value={username} 
+              placeholder='Enter your username'
               onChange={onChange}
             />
           </div>

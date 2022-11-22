@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaUser } from 'react-icons/fa';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { register, reset } from '../features/auth/userSlice';
+import Spinner from '../components/Spinner';
 
 interface RegistrationState {
-    name: '',
+    username: '',
     email: '',
     password: '',
     password2: ''
@@ -10,13 +15,18 @@ interface RegistrationState {
 
 function Register() {
   const [formData, setFormData] = useState<RegistrationState>({
-    name: '',
+    username: '',
     email: '',
     password: '',
     password2: ''
   });
 
-  const {name, email, password, password2} = formData;
+  const {username, email, password, password2} = formData;
+
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const {user, isLoading, isError, isSuccess, message} = useAppSelector((state) => state.user);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState) => ({
@@ -25,9 +35,37 @@ function Register() {
     }));
   };
 
+  useEffect(() => {
+    if (isError) {
+      toast.error(`Registration failed: ${message}`);
+    }
+
+    if (isSuccess || user) {
+      navigate('/');
+    }
+
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch])
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (password !== password2) {
+      toast.error('Passwords do not match!');
+    } else {
+      const userData = {
+        username,
+        email,
+        password
+      }
+
+      dispatch(register(userData))
+    }
   };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <>
@@ -44,10 +82,10 @@ function Register() {
             <input 
               type="text" 
               className="form-control" 
-              id='name' 
-              name='name' 
-              value={name} 
-              placeholder='Enter your name'
+              id='username' 
+              name='username' 
+              value={username} 
+              placeholder='Enter your username'
               onChange={onChange}
             />         
           </div>

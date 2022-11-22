@@ -5,6 +5,7 @@ import errorHandler from "./middleware/errorHandler";
 import dotenv from "dotenv";
 import connectDB from "./config/db";
 import cookieParser from "cookie-parser";
+import cors from 'cors';
 
 // Configuration and database connection
 dotenv.config();
@@ -15,9 +16,10 @@ const app = express();
 
 // Connect middleware to app
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(errorHandler);
+app.use(cors({ origin: "http://localhost:3000"}));
 
 
 // Connect routes to app
