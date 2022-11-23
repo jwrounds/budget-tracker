@@ -38,7 +38,7 @@ const postBudget = asyncHandler( async (req: Request, res: Response) => {
   });
 
   res.status(200).json(budget);
-  user.budgets.push(budget.id);
+  user.budget = budget.id;
   user.save();
 });
 
@@ -54,7 +54,7 @@ const updateBudgetById = asyncHandler( async (req: Request, res: Response) => {
   }
 
   // Check if user owns budget before updating
-  if (userOwnsBudget(user.budgets, budget)) {
+  if (user.budget.valueOf() === budget.id) {
 
     const updatedBudget = await Budget.findByIdAndUpdate(req.params.id, {
       user: req.user.id,
@@ -82,15 +82,13 @@ const deleteBudgetById = asyncHandler( async (req: Request, res: Response) => {
   }
 
   // Check if user owns budget before deleting
-  if (userOwnsBudget(user.budgets, budget)) {
+  if (user.budget.valueOf() === budget.id) {
 
     await budget.remove();
     res.status(200).json({ message: `Deleted budget: ${req.params.id}`});
 
-    // Remove budget from user's "User.budgets" array
-    const userBudgetId = findBudgetObjectId(user.budgets, budget);
-    const budgetIndex = user.budgets.indexOf(userBudgetId);
-    user.budgets.splice(budgetIndex, 1);
+    // Remove User's budget
+    user.budget = null
     user.save();
 
   } else {
@@ -98,14 +96,6 @@ const deleteBudgetById = asyncHandler( async (req: Request, res: Response) => {
   }
 });
 
-const userOwnsBudget = (userBudgets: any[], budget: Document): boolean => {
-  let usersBudgetId = findBudgetObjectId(userBudgets, budget).valueOf();
-  return usersBudgetId === budget.id ? true : false;
-}
-
-const findBudgetObjectId = (userBudgets: any[], budget: Document): Document => {
-  return userBudgets.find(b => b.valueOf() === budget.id);
-}
 
 export {
   getBudgets,

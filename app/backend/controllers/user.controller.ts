@@ -9,20 +9,20 @@ import User from "../models/user.model";
 // @route   POST api/v1/users
 // @access  Public
 const registerUser = asyncHandler(async (req: Request, res: Response) => {
-  const { username, password, email } = req.body;
+  const { firstName, lastName, email, password } = req.body;
 
   // Check if required fields present
-  if (!username || !password || !email) {
+  if (!firstName || !lastName || !email || !password) {
     res.status(400);
     throw new Error("Required field(s) missing! Please fill in all fields and try again.");
   } 
 
   // Check if user exists
-  const userExists = await User.findOne({username, email})
+  const userExists = await User.findOne({email})
 
   if (userExists) {
     res.status(400);
-    throw new Error("Account already exists!");
+    throw new Error("An account with this email address already exists!");
   }
 
   // Hash password
@@ -31,9 +31,10 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 
   // Create user
   const user = await User.create({ 
-    username: req.body.username,
-    password: hashedPassword,
-    email: req.body.email
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    password: hashedPassword
   });
 
   // If user is valid, send response and save JWT
@@ -50,7 +51,8 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
       httpOnly: true,
     }).json({
       _id: user.id,
-      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       token: token
     });
@@ -64,16 +66,16 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 // @route   POST api/v1/users/login
 // @access  Public
 const loginUser = asyncHandler(async (req: Request, res: Response) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   // Check if required fields present
-  if (!username || !password) {
+  if (!email || !password) {
     res.status(400);
     throw new Error("Required field(s) missing! Please fill in all fields and try again.");
   } 
 
   // Check if user exists && can authenticate
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ email });
   const hashedPassword = String(user.password);
 
   // If user credentials valid, save JWT
@@ -90,9 +92,10 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
         httpOnly: true,
       }).json({
         _id: user.id,
-        username: user.username,
-        email: user.email,
-        token: token
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      token: token
       });
   } else {
     res.status(400);
@@ -105,14 +108,14 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
 // @route   GET api/v1/users/me
 // @access  Private
 const getCurrentUser = asyncHandler(async (req: Request, res: Response) => {
-  const {_id, username, email, budgets, favorites } = await User.findById(req.user.id);
+  const {_id, firstName, lastName, email, budget } = await User.findById(req.user.id);
 
   res.status(200).json({ 
     _id: _id,
-    username: username,
+    firstName: firstName,
+    lastName: lastName,
     email: email,
-    budgets: budgets,
-    favorites: favorites
+    budgets: budget,
   });
 });
 
